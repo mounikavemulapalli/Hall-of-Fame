@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Indicator with Mentor Cards</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      height: 100vh;
+      background: linear-gradient(45deg, #1c1c1c, #333333);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1000px; 
+    }
+
+    .hexagon-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: rgba(10, 10, 10, 0.8);
+      transform-style: preserve-3d;
+    }
+
+    .hexagon {
+      position: absolute;
+      width: 120px;
+      height: 100px;
+      background-color: rgba(255, 255, 255, 0.1);
+      clip-path: polygon(
+        50% 0%,
+        100% 25%,
+        100% 75%,
+        50% 100%,
+        0% 75%,
+        0% 25%
+      );
+      animation: floatHexagons 20s infinite linear;
+      transform-origin: center;
+    }
+
+    @keyframes floatHexagons {
+      0% {
+        transform: translateZ(0) rotateY(0deg) translateY(100vh) scale(1);
+        opacity: 0.3;
+      }
+      50% {
+        transform: translateZ(50px) rotateY(180deg) translateY(50vh) scale(1.2);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateZ(0) rotateY(360deg) translateY(-100vh) scale(1);
+        opacity: 0.3;
+      }
+    }
+
+    .container {
+      position: relative;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      color: white;
+    }
+
+    svg {
+      width: 200px;
+      height: 200px;
+    }
+
+    circle {
+      fill: none;
+      stroke: #d3c6b1;
+      stroke-width: 1;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 0.1s ease;
+    }
+
+    text {
+      fill: #d3c6b1;
+      font-size: 10px;
+    }
+
+    .loading-image {
+      width: 95px;
+      height: 95px;
+      position: absolute;
+      top: 54%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+    }
+
+    .completed h1 {
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .completed p {
+      color: #bbbbbb;
+      margin-bottom: 20px;
+      max-width: 200px;
+      margin: 0 auto;
+    }
+
+    .arrow {
+      font-size: 40px;
+      color: #d3c6b1;
+      margin-top: 20px;
+      animation: blink 1.5s infinite;
+      cursor: pointer;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .mentor-section {
+      padding: 50px;
+      background: #f5f5f5;
+    }
+
+    .mentor-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 20px;
+      width: 200px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .mentor-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .mentor-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+
+    .mentor-card h3 {
+      margin: 10px 0;
+      color: #333;
+    }
+
+    .mentor-card p {
+      margin-bottom: 15px;
+      color: #666;
+      text-align: center;
+    }
+    #nav2{
+    display: flex;
+    height: 7%;
+    width: 100%;
+    position: fixed;
+    left: 21%;
+    z-index: 99;
+    padding: 0px 30px;
+    margin-right: 280px;
+}
+
+#nav2>h3{
+    font-family: gilroy;
+    font-weight: 400;
+    font-size: 22px;
+}
+#nav2> button a {
+    color: #fff;
+    text-decoration: none;
+}
+#nav2>button {
+    padding: 12px 22px;
+    border-radius: 50px;
+    background-color: #000;
+    border: none;
+}
+
+#nav1{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 7%;
+    width: 100%;
+    position: fixed;
+    z-index: 99;
+    padding: 0px 30px;
+    margin-left: 580px;
+    margin-top: 10px;
+}
+#nav1>h3{
+    font-family: gilroy;
+    font-weight: 400;
+    font-size: 22px;
+}
+#nav1> button a {
+    color: #fff;
+    text-decoration: none;
+}
+#nav1>button {
+    padding: 12px 22px;
+    border-radius: 50px;
+    background-color: #000;
+  
+    border: none;
+}
+    .mentor-card button {
+      background-color: #0077b5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .mentor-card button a {
+      background-color: #0077b5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .mentor-card button:hover a {
+      background-color: #005582;
+    }
+
+    .mentor-card button:hover {
+      background-color: #005582;
+    }
+
+    .mentor-cards {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="loading">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" id="progress-circle"></circle>
+        <text x="50%" y="50%" text-anchor="middle" dy=".3em" id="percentage-text">0%</text>
+      </svg>
+    </div>
+    <div id="completed" style="display: none;">
+      <h1>HALL OF FRAME</h1>
+      <p>Find Skilled Developers for your projects, from writing to web development on our platform - where talent meets opportunity!</p>
+      <div class="arrow">&#8594;</div>
+      <p>Join our dynamic leadership team and play a pivotal role in shaping the future of our organization. </p>
+      <p>As the Chief of Staff, you’ll drive strategic initiatives, optimize operations, and work closely with executive leadership to achieve our ambitious goals.</p>
+        <p>Ready to make an impact</p>
+        <div id="nav2">
+          <button><a href="#contact">Apply</a></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mentor-section" id="mentor-section" style="display: none;">
+    <div id="nav1">
+      <button><a href="#contact">Apply</a></button>
+  </div>
+    <h2 style="text-align: center; margin-bottom: 30px;">Chief Of Staff's</h2>
+    <div class="mentor-cards">
+      <div class="mentor-card">
+        <img src="images/monika.jpeg" alt="Mentor Image">
+        <h3>Mounika Vemulapalli</h3>
+        <p>Mern Stack Developer</p>
+        <button> <a href="https://www.linkedin.com/in/mounika-vemulapalli-540615138/">LinkedIn</a></button>
+      </div>
+      <div class="mentor-card">
+        <img src="images/himanshu.jpeg" alt="Mentor Image">
+        <h3>Himanshu Kumar</h3>
+        <p>React Js Developer</p>
+        <button> <a href="https://www.linkedin.com/in/himanshu-kumar-singh-0h000000021/">LinkedIn</a></button>
+      </div>
+      <div class="mentor-card">
+        <img src="images/1223.jpeg" alt="Mentor Image">
+        <h3>Prince</h3>
+        <p>Full Stack Developer</p>
+        <button> <a href="https://www.linkedin.com/in/prince-25b2b2301/">LinkedIn</a></button>
+      </div>
+     
+    </div>
+  </div>
+  <script>
+    let percentage = 0;
+    const progressCircle = document.getElementById("progress-circle");
+    const percentageText = document.getElementById("percentage-text");
+
+    const interval = setInterval(() => {
+      if (percentage < 100) {
+        percentage++;
+        const dashArray = 283;
+        const dashOffset = dashArray - (dashArray * percentage) / 100;
+
+        progressCircle.style.strokeDashoffset = dashOffset;
+        percentageText.textContent = `${percentage}%`;
+      } else {
+        clearInterval(interval);
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("completed").style.display = "block";
+        document.getElementById("mentor-section").style.display = "block";
+      }
+    }, 50);
+  </script>
+</body>
+</html>
